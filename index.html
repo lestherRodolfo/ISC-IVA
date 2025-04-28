@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculadora ISC + IVA</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1 { text-align: center; }
+    table { width: 100%; margin-top: 20px; }
+    input[type="number"], input[type="text"] { width: 100%; padding: 8px; margin: 5px 0; }
+    button { padding: 10px; width: 100%; margin-top: 10px; }
+    .result { margin-top: 20px; font-size: 18px; }
+  </style>
+</head>
+<body>
+
+<h1>Calculadora ISC + IVA</h1>
+
+<table id="productTable">
+  <thead>
+    <tr>
+      <th>Producto</th>
+      <th>Precio Base (C$)</th>
+      <th>ISC (15%)</th>
+      <th>IVA (15%)</th>
+      <th>Total (C$)</th>
+    </tr>
+  </thead>
+  <tbody id="products"></tbody>
+</table>
+
+<button onclick="addProduct()">Agregar Producto</button>
+<button onclick="calculateTotal()">Calcular Total</button>
+
+<div class="result" id="totalResult"></div>
+
+<script>
+let productCount = 0;
+
+function addProduct() {
+  const table = document.getElementById('products');
+  const row = document.createElement('tr');
+
+  row.innerHTML = `
+    <td><input type="text" placeholder="Nombre" id="name${productCount}"></td>
+    <td><input type="number" placeholder="Precio" id="price${productCount}" step="0.01"></td>
+    <td id="isc${productCount}">-</td>
+    <td id="iva${productCount}">-</td>
+    <td id="total${productCount}">-</td>
+  `;
+
+  table.appendChild(row);
+  productCount++;
+}
+
+function calculateTotal() {
+  let grandTotal = 0;
+  for (let i = 0; i < productCount; i++) {
+    const priceInput = document.getElementById(`price${i}`);
+    if (priceInput && priceInput.value !== '') {
+      const basePrice = parseFloat(priceInput.value);
+      const isc = basePrice * 0.15;
+      const iva = (basePrice + isc) * 0.15;
+      const total = basePrice + isc + iva;
+
+      document.getElementById(`isc${i}`).innerText = isc.toFixed(2);
+      document.getElementById(`iva${i}`).innerText = iva.toFixed(2);
+      document.getElementById(`total${i}`).innerText = total.toFixed(2);
+
+      grandTotal += total;
+    }
+  }
+  document.getElementById('totalResult').innerText = `Total General: C$ ${grandTotal.toFixed(2)}`;
+}
+</script>
+
+</body>
+</html>
